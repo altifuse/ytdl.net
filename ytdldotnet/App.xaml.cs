@@ -18,11 +18,22 @@ namespace ytdldotnet
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            YtdlManager ytdlManager = new YtdlManager();
-            // Trace.WriteLine("exists: " + ytdlManager.Exists());
-            // ytdlManager.Download();
-            Trace.WriteLine("exists: " + ytdlManager.Exists());
-            Trace.WriteLine("is up to date: " + ytdlManager.IsUpToDate());
+            ExternalSoftwareManager ytdlManager = new YtdlManager();
+            ExternalSoftwareManager ffmpegManager = new FfmpegManager();
+            
+            // check if youtube-dl is available
+            if(!ytdlManager.Exists())
+            {
+                // TO-DO: prompt user to download or exit
+                // placeholder
+                ytdlManager.Download();
+            }
+
+            // check if ffmpeg is available
+            if(!ffmpegManager.Exists())
+            {
+                // TO-DO: flag that tells the conversion view that it should be disabled if there's no ffmpeg
+            }
         }
     }
 }

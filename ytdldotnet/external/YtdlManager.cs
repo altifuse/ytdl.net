@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 
 namespace ytdldotnet.external
 {
-    class YtdlManager: ExternalSoftware
+    class YtdlManager: ExternalSoftwareManager
     {
         public YtdlManager()
         {
             string name = "ytdl";
-            string localFile = "youtube-dl.exe";
+            string downloadedFile = "youtube-dl.exe";
+            string mainExecutable = "youtube-dl.exe";
             string downloadUrl = "https://yt-dl.org/latest/youtube-dl.exe";
             string checksumUrl = "https://yt-dl.org/latest/MD5SUMS";
-            this.Info = new SWInfo(name, localFile, downloadUrl, checksumUrl);
+            this.Info = new SWInfo(name, downloadedFile, mainExecutable, downloadUrl, checksumUrl);
         }
     }
 }

@@ -8,10 +8,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.IO.Compression;
 
 namespace ytdldotnet.external
 {
-    class ExternalSoftware
+    class ExternalSoftwareManager
     {
         SWInfo info;
         WebClient client;
@@ -22,37 +23,35 @@ namespace ytdldotnet.external
 
         public bool Exists()
         {
-            if (File.Exists(AppBaseDir + this.Info.LocalFile))
+            if (File.Exists(AppBaseDir + this.Info.MainExecutable))
             {
                 return true;
             }
             return false;
         }
 
-        public void Download()
+        public virtual void Download()
         {
             this.client = new WebClient();
-            this.client.DownloadFile(this.Info.DownloadUrl, this.Info.LocalFile);
+            this.client.DownloadFile(this.Info.DownloadUrl, this.Info.DownloadedFile);
         }
 
-        public bool IsUpToDate() //defaults to MD5SUMS file
+        public virtual bool IsUpToDate() //defaults to MD5SUMS file for downloaded file
         {
             this.client = new WebClient();
             this.client.DownloadFile(this.Info.ChecksumUrl, "_tempMD5SUMS");
             string referenceMD5;
             string localMD5;
             string reference = File.ReadAllText("_tempMD5SUMS");
-            referenceMD5 = Regex.Match(reference.ToString(), ".*(?=" + this.Info.LocalFile + ")").ToString();
+            referenceMD5 = Regex.Match(reference.ToString(), ".*(?=" + this.Info.DownloadedFile + ")").ToString();
             referenceMD5 = Regex.Replace(referenceMD5, @"\s+", "");
-            Trace.WriteLine(referenceMD5);
 
             using (var md5 = MD5.Create())
             {
-                using (var stream = File.OpenRead(this.Info.LocalFile))
+                using (var stream = File.OpenRead(this.Info.DownloadedFile))
                 {
                     localMD5 = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLower();
                     localMD5 = Regex.Replace(localMD5, @"\s+", "");
-                    Trace.WriteLine(localMD5);
                 }
             }
 
