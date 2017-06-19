@@ -50,13 +50,13 @@ namespace ytdldotnet.external
             {
                 using (var stream = File.OpenRead(this.Info.LocalFile))
                 {
-                    localMD5 = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "‌​").ToLower();
+                    localMD5 = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLower();
                     localMD5 = Regex.Replace(localMD5, @"\s+", "");
                     Trace.WriteLine(localMD5);
                 }
             }
 
-            if(String.Equals(referenceMD5, localMD5, StringComparison.InvariantCultureIgnoreCase))
+            if(String.Equals(referenceMD5, localMD5))
             {
                 return true;
             }
