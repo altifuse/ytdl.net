@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.IO.Compression;
 
-namespace ytdldotnet.external
+namespace ytdldotnet.externalSoftware
 {
     class ExternalSoftwareManager
     {

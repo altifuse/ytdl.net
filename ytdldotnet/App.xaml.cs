@@ -6,7 +6,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using ytdldotnet.external;
+using ytdldotnet.externalSoftware;
+using ytdldotnet.Properties;
 
 namespace ytdldotnet
 {
@@ -30,10 +31,16 @@ namespace ytdldotnet
             }
 
             // check if ffmpeg is available
-            if(!ffmpegManager.Exists())
+            if(ffmpegManager.Exists())
             {
-                // TO-DO: flag that tells the conversion view that it should be disabled if there's no ffmpeg
+                Settings.Default.CanConvert = true;
             }
+
+            // number of cores for the Easy Interface multithreading
+            Settings.Default.ProcessorCount = Environment.ProcessorCount;
+
+            Trace.WriteLine(Settings.Default.CanConvert);
+            Trace.WriteLine(Settings.Default.ProcessorCount);
         }
     }
 }

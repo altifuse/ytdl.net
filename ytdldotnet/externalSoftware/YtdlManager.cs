@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ytdldotnet.external
+namespace ytdldotnet.externalSoftware
 {
     class YtdlManager: ExternalSoftwareManager
     {

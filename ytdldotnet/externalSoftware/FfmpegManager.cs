@@ -8,7 +8,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Net;
 
-namespace ytdldotnet.external
+namespace ytdldotnet.externalSoftware
 {
     class FfmpegManager: ExternalSoftwareManager
     {
