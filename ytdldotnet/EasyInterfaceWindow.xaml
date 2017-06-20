@@ -13,16 +13,12 @@
         BorderBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="1"
         WindowStartupLocation="CenterScreen">
-    <TextBox x:Name="urlBox"
-             HorizontalAlignment="Left"
-             Height="32"
-             Margin="0,0,0,0"
-             TextWrapping="NoWrap"
-             VerticalAlignment="Top"
-             Width="256"
-             BorderThickness="0"
-             Controls:TextBoxHelper.Watermark="enter a YouTube URL..."
-             
-             TextChanged="urlBox_TextChanged">
-    </TextBox>
+    <Grid Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+    </Grid>
+
 </Controls:MetroWindow>
