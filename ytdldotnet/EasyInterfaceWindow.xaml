@@ -6,8 +6,23 @@
         xmlns:local="clr-namespace:ytdldotnet"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="EasyInterfaceWindow" Height="300" Width="300">
-    <Grid>
-        
-    </Grid>
+        Title="ytdl.NET" Height="Auto" Width="Auto" SizeToContent="WidthAndHeight"
+        ShowMaxRestoreButton="False"
+        ShowIconOnTitleBar="False"
+        SaveWindowPosition="True"
+        BorderBrush="{DynamicResource AccentColorBrush}"
+        BorderThickness="1"
+        WindowStartupLocation="CenterScreen">
+    <TextBox x:Name="urlBox"
+             HorizontalAlignment="Left"
+             Height="32"
+             Margin="0,0,0,0"
+             TextWrapping="NoWrap"
+             VerticalAlignment="Top"
+             Width="256"
+             BorderThickness="0"
+             Controls:TextBoxHelper.Watermark="enter a YouTube URL..."
+             
+             TextChanged="urlBox_TextChanged">
+    </TextBox>
 </Controls:MetroWindow>

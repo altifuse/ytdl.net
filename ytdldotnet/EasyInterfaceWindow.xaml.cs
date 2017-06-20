@@ -24,5 +24,11 @@ namespace ytdldotnet
         {
             InitializeComponent();
         }
+
+        private void urlBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // TO-DO: wait for one second
+
+        }
     }
 }
