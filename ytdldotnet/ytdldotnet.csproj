@@ -62,6 +62,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\PlaylistInfo.cs" />
+    <Compile Include="Data\VideoInfo.cs" />
+    <Compile Include="Util\CustomControls.cs" />
     <Compile Include="Util\UrlTypes.cs" />
     <Page Include="EasyInterfaceWindow.xaml">
       <SubType>Designer</SubType>

@@ -12,7 +12,8 @@
         SaveWindowPosition="True"
         BorderBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="1"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        SizeChanged="Window_SizeChanged">
     <Grid Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

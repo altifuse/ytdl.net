@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using ytdldotnet.Data;
 using ytdldotnet.externalSoftware;
 using ytdldotnet.Util;
 
@@ -27,6 +28,11 @@ namespace ytdldotnet
     public partial class EasyInterfaceWindow
     {
         DispatcherTimer urlBoxTimer;
+
+        // controls
+        TextBox urlBox;
+        Label initialFetchInfoLabel;
+        ProgressRing initialFetchProgressRing;
 
         Dictionary<UrlTypes, String> urlTypesText = new Dictionary<UrlTypes, string>()
         {
@@ -41,16 +47,7 @@ namespace ytdldotnet
             InitializeComponent();
 
             // creates the URL textbox
-            TextBox urlBox = new TextBox()
-            {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Height = 32,
-                Width = 256,
-                Margin = new Thickness(16, 16, 16, 16),
-                TextWrapping = TextWrapping.NoWrap,
-                VerticalAlignment = VerticalAlignment.Top,
-                BorderThickness = new Thickness(1)
-            };
+            urlBox = CustomControls.GetUrlTextbox();
             urlBox.SetResourceReference(Control.BorderBrushProperty, "AccentColorBrush");
             TextBoxHelper.SetWatermark(urlBox, "enter a YouTube URL...");
             urlBox.TextChanged += UrlBox_TextChanged;
@@ -76,59 +73,63 @@ namespace ytdldotnet
         private void FetchUrlInfo(object sender, EventArgs e)
         {
             var timer = sender as DispatcherTimer;
-            if(timer == null)
+            if (timer == null)
             {
                 return;
             }
 
-            // resizes window
-            this.Resize(80); // 64 height + 16 margin
+            string url = "\"" + (String)timer.Tag + "\"";
 
-            string url = (String)timer.Tag;
+            // adds spinner and initial loading message
+            MainGrid.Children.RemoveRange(1, 2);
+            initialFetchProgressRing = CustomControls.GetProgressRing();
+            initialFetchProgressRing.SetResourceReference(Control.BorderBrushProperty, "AccentColorBrush");
+            Grid.SetColumn(initialFetchProgressRing, 0);
+            Grid.SetRow(initialFetchProgressRing, 1);
+            MainGrid.Children.Add(initialFetchProgressRing);
+            initialFetchInfoLabel = CustomControls.GetLoadingLabel("Loading " + urlTypesText[GetUrlType(url)] + " info...");
+            initialFetchInfoLabel.SetResourceReference(Control.BorderBrushProperty, "AccentColorBrush");
+            Grid.SetColumn(initialFetchInfoLabel, 0);
+            Grid.SetRow(initialFetchInfoLabel, 1);
+            MainGrid.Children.Add(initialFetchInfoLabel);
 
             // stops textbox delay timer
             timer.Stop();
 
-            // TO-DO: call youtube-dl
+            // calls new thread for handling youtube-dl
+            new Thread(() => FetchYtdlInfo(url, GetUrlType(url))).Start();
+        }
 
-            if(GetUrlType(url) == UrlTypes.YoutubeChannel || GetUrlType(url) == UrlTypes.YoutubePlaylist)
+        private async void FetchYtdlInfo(string url, UrlTypes urlType)
+        {
+            YtdlManager ytdlManager = new YtdlManager();
+            if (urlType == UrlTypes.YoutubeChannel || urlType == UrlTypes.YoutubePlaylist)
             {
-                // TO-DO: this thread must NOT return here; instead, I think it needs to trigger an event upon ending that will call another method supposed to continue after the spinner
-                YtdlManager ytdlManager = new YtdlManager();
-                string[] info = null;
-                var thread = new Thread(
-                    () =>
+                PlaylistInfo playlistInfo = await ytdlManager.GetPlaylistNameAndLength(url, urlType);
+                this.Dispatcher.Invoke(() =>
+                {
+                    if(urlType == UrlTypes.YoutubeChannel)
                     {
-                        info = ytdlManager.GetPlaylistNameAndLength(url, GetUrlType(url));
-                    });
-                thread.Start();
-                thread.Join();
-                Trace.WriteLine(info[0] + " " + info[1]);
-            }
+                        initialFetchInfoLabel.Content = "Channel: " + playlistInfo.Name + " | " + playlistInfo.NumberOfVideos + " videos";
+                    }
+                    else
+                    {
+                        initialFetchInfoLabel.Content = "Playlist: " + playlistInfo.Name + " | " + playlistInfo.NumberOfVideos + " videos";
+                    }
 
-            // adds spinner and initial loading message
-            MainGrid.Children.RemoveRange(1, 2);
-            ProgressRing ytdlInitialFetchProgressRing = new ProgressRing()
+                    Grid.SetRow(initialFetchProgressRing, 2);
+
+                    
+                });
+
+                playlistInfo.Videos = await ytdlManager.GetPlaylistHead(url);
+
+                //TO-DO: use info from playlist head
+            }
+            else if (urlType == UrlTypes.YoutubeVideo)
             {
-                Height = 64,
-                Width = 64,
-                Margin = new Thickness(16, 16, 16, 16),
-                IsActive = true
-            };
-            ytdlInitialFetchProgressRing.SetResourceReference(Control.BorderBrushProperty, "AccentColorBrush");
-            Grid.SetColumn(ytdlInitialFetchProgressRing, 0);
-            Grid.SetRow(ytdlInitialFetchProgressRing, 1);
-            MainGrid.Children.Add(ytdlInitialFetchProgressRing);
-            Label initialFetchLabel = new Label()
-            {
-                Content = "Loading " + urlTypesText[GetUrlType(url)] + " info...",
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            initialFetchLabel.SetResourceReference(Control.BorderBrushProperty, "AccentColorBrush");
-            Grid.SetColumn(initialFetchLabel, 0);
-            Grid.SetRow(initialFetchLabel, 1);
-            MainGrid.Children.Add(initialFetchLabel);
+                //TO-DO
+            }
         }
 
         private UrlTypes GetUrlType(string url)
@@ -148,25 +149,47 @@ namespace ytdldotnet
             return UrlTypes.Page;
         }
 
-        private async void Resize(double increment)
+        // handles (or at least should do so) animations when controls are changed
+        private async void Recenter()
         {
             await Task.Delay(10);
-            double initialHeight = this.Height;
-            double newHeight = initialHeight + increment;
-            double heightInterval = newHeight - initialHeight;
-            double heightStep = heightInterval / 10;
 
             double initialTop = this.Top;
-            double newTop = (SystemParameters.WorkArea.Height - newHeight) / 2;
+            double newTop = (SystemParameters.WorkArea.Height - this.Height) / 2;
             double topInterval = newTop - initialTop;
             double topStep = topInterval / 10;
 
             for (int i = 0; i < 10; i++)
             {
-                // this.Height += heightStep;
                 this.Top += topStep;
                 await Task.Delay(10);
             }
+        }
+
+        //private async void Resize(double increment)
+        //{
+        //    await Task.Delay(10);
+        //    double initialHeight = this.Height;
+        //    double newHeight = initialHeight + increment;
+        //    double heightInterval = newHeight - initialHeight;
+        //    double heightStep = heightInterval / 10;
+
+        //    double initialTop = this.Top;
+        //    double newTop = (SystemParameters.WorkArea.Height - newHeight) / 2;
+        //    double topInterval = newTop - initialTop;
+        //    double topStep = topInterval / 10;
+
+        //    for (int i = 0; i < 10; i++)
+        //    {
+        //        // this.Height += heightStep;
+        //        this.Top += topStep;
+        //        await Task.Delay(10);
+        //    }
+        //}
+
+        private async void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Recenter();
         }
     }
 }
