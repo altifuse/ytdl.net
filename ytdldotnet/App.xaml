@@ -16,6 +16,7 @@
                 <!-- Custom -->
                 <ResourceDictionary Source="themes/YouTubeRed.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

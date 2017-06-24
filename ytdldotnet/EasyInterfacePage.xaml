@@ -11,14 +11,17 @@
       Title="EasyInterfacePage">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/> <!-- url box -->
+            <RowDefinition Height="Auto"/> <!-- status text -->
+            <RowDefinition Height="Auto"/> <!-- conversion formats -->
+            <RowDefinition Height="Auto"/> <!-- local path box -->
+            <RowDefinition Height="Auto"/> <!-- preview for playlists -->
+            <RowDefinition Height="Auto"/> <!-- progress ring -->
         </Grid.RowDefinitions>
-        <TextBox x:Name="urlBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="240" Height="16" Margin="8"
-                 TextWrapping="NoWrap" Text="{Binding Path=Url}" Controls:TextBoxHelper.Watermark="Enter a YouTube URL here"
-                 BorderThickness="0"
-                 Grid.Column="0" Grid.Row="0"/>
-        <Grid Grid.Column="0" Grid.Row="1">
+        <TextBox x:Name="urlBox" Style="{StaticResource ResourceKey=EasyTextBox}"
+                 Text="{Binding Path=Url}" Controls:TextBoxHelper.Watermark="Enter a YouTube URL here" Grid.Column="0" Grid.Row="0"/>
+        <Label x:Name="StatusLabel" Content="{Binding Path=StatusText}" Grid.Column="0" Grid.Row="1" Visibility="{Binding Path=IsStatusTextVisible, Converter={StaticResource BoolToVis}}"/>
+        <Grid Grid.Column="0" Grid.Row="2" Visibility="{Binding Path=IsConversionFormatVisible, Converter={StaticResource BoolToVis}}" IsEnabled="{Binding Path=CanConvert}" Margin="0,0,0,8">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -28,12 +31,14 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <RadioButton x:Name="DDLformat" Style="{StaticResource ResourceKey=ConversionFormat}" Content="Original" Grid.Column="0" Grid.Row="0"/>
+            <RadioButton x:Name="DDLformat" Style="{StaticResource ResourceKey=ConversionFormat}" HorizontalAlignment="Right" Content="Original" Grid.Column="0" Grid.Row="0"/>
             <RadioButton x:Name="MP3format" Style="{StaticResource ResourceKey=ConversionFormat}" Content="MP3" Grid.Column="1" Grid.Row="0"/>
-            <RadioButton x:Name="OGGformat" Style="{StaticResource ResourceKey=ConversionFormat}" Content="OGG" Grid.Column="2" Grid.Row="0"/>
-            <RadioButton x:Name="AVIformat" Style="{StaticResource ResourceKey=ConversionFormat}" Content="AVI" Grid.Column="0" Grid.Row="1"/>
+            <RadioButton x:Name="OGGformat" Style="{StaticResource ResourceKey=ConversionFormat}" HorizontalAlignment="Left" Content="OGG" Grid.Column="2" Grid.Row="0"/>
+            <RadioButton x:Name="AVIformat" Style="{StaticResource ResourceKey=ConversionFormat}" HorizontalAlignment="Right" Content="AVI" Grid.Column="0" Grid.Row="1"/>
             <RadioButton x:Name="MP4format" Style="{StaticResource ResourceKey=ConversionFormat}" Content="MP4" Grid.Column="1" Grid.Row="1"/>
-            <RadioButton x:Name="WMVformat" Style="{StaticResource ResourceKey=ConversionFormat}" Content="WMV" Grid.Column="2" Grid.Row="1"/>
+            <RadioButton x:Name="WMVformat" Style="{StaticResource ResourceKey=ConversionFormat}" HorizontalAlignment="Left" Content="WMV" Grid.Column="2" Grid.Row="1"/>
         </Grid>
+        <TextBox x:Name="localPathBox" Style="{StaticResource ResourceKey=EasyTextBox}" Visibility="{Binding Path=IsLocalPathBoxVisible, Converter={StaticResource BoolToVis}}"
+                 Text="{Binding Path=LocalPath}" Controls:TextBoxHelper.Watermark="Enter your local path" Grid.Column="0" Grid.Row="3"/>
     </Grid>
 </Page>
