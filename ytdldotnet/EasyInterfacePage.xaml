@@ -1,0 +1,39 @@
+﻿<Page x:Class="ytdldotnet.EasyInterfacePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ytdldotnet"
+      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+      mc:Ignorable="d" 
+      d:DesignHeight="256" d:DesignWidth="256"
+      Height="Auto" Width="Auto"
+      Title="EasyInterfacePage">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBox x:Name="urlBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="240" Height="16" Margin="8"
+                 TextWrapping="NoWrap" Text="{Binding Path=Url}" Controls:TextBoxHelper.Watermark="Enter a YouTube URL here"
+                 BorderThickness="0"
+                 Grid.Column="0" Grid.Row="0"/>
+        <Grid Grid.Column="0" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <RadioButton x:Name="DDLformat" Style="{StaticResource ResourceKey=ConversionFormat}" Content="Original" Grid.Column="0" Grid.Row="0"/>
+            <RadioButton x:Name="MP3format" Style="{StaticResource ResourceKey=ConversionFormat}" Content="MP3" Grid.Column="1" Grid.Row="0"/>
+            <RadioButton x:Name="OGGformat" Style="{StaticResource ResourceKey=ConversionFormat}" Content="OGG" Grid.Column="2" Grid.Row="0"/>
+            <RadioButton x:Name="AVIformat" Style="{StaticResource ResourceKey=ConversionFormat}" Content="AVI" Grid.Column="0" Grid.Row="1"/>
+            <RadioButton x:Name="MP4format" Style="{StaticResource ResourceKey=ConversionFormat}" Content="MP4" Grid.Column="1" Grid.Row="1"/>
+            <RadioButton x:Name="WMVformat" Style="{StaticResource ResourceKey=ConversionFormat}" Content="WMV" Grid.Column="2" Grid.Row="1"/>
+        </Grid>
+    </Grid>
+</Page>
