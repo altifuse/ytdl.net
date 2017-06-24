@@ -6,11 +6,21 @@ using System.Threading.Tasks;
 
 namespace ytdldotnet.Util
 {
-    enum UrlTypes
+    enum Enums
     {
         YoutubeVideo,
         YoutubePlaylist,
         YoutubeChannel,
         Page
+    }
+
+    enum TargetFormats
+    {
+        DDL,
+        MP3,
+        OGG,
+        AVI,
+        MP4,
+        WMV
     }
 }

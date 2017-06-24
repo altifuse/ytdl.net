@@ -65,7 +65,7 @@
     <Compile Include="Data\PlaylistInfo.cs" />
     <Compile Include="Data\VideoInfo.cs" />
     <Compile Include="Util\CustomControls.cs" />
-    <Compile Include="Util\UrlTypes.cs" />
+    <Compile Include="Util\Enums.cs" />
     <Page Include="EasyInterfaceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -81,6 +81,10 @@
     <Compile Include="externalSoftware\FfmpegManager.cs" />
     <Compile Include="externalSoftware\SWInfo.cs" />
     <Compile Include="externalSoftware\YtdlManager.cs" />
+    <Page Include="ResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

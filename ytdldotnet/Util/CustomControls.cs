@@ -27,13 +27,13 @@ namespace ytdldotnet.Util
             return new Label()
             {
                 Content = content,
-                Margin = new Thickness(16, 16, 16, 16),
+                Margin = new Thickness(16,0,16,0),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
         }
 
-        public static TextBox GetUrlTextbox()
+        public static TextBox GetPathBox()
         {
             return new TextBox()
             {
@@ -45,6 +45,42 @@ namespace ytdldotnet.Util
                 VerticalAlignment = VerticalAlignment.Top,
                 BorderThickness = new Thickness(1)
             };
+        }
+
+        public static Grid GetConversionButtons()
+        {
+            List<RadioButton> buttons = new List<RadioButton>();
+
+            foreach(TargetFormats format in Enum.GetValues(typeof(TargetFormats)))
+            {
+                RadioButton btn = new RadioButton()
+                {
+                    Name = format + "rdBtn",
+                    Content = format,
+                    GroupName = "targetFormat",
+                    IsChecked = false
+                };
+
+                Grid.SetColumn(btn, Array.IndexOf(Enum.GetValues(typeof(TargetFormats)), format) % 3);
+                Grid.SetRow(btn, (int) Math.Floor((double)(Array.IndexOf(Enum.GetValues(typeof(TargetFormats)), format)/3)));
+
+                buttons.Add(btn);
+            }
+
+            Grid conversionButtonsGrid = new Grid();
+
+            conversionButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            conversionButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            conversionButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            conversionButtonsGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
+            conversionButtonsGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
+
+            foreach (RadioButton btn in buttons)
+            {
+                conversionButtonsGrid.Children.Add(btn);
+            }
+
+            return conversionButtonsGrid;
         }
     }
 }

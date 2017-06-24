@@ -33,13 +33,14 @@ namespace ytdldotnet
         TextBox urlBox;
         Label initialFetchInfoLabel;
         ProgressRing initialFetchProgressRing;
+        TextBox localPathBox;
 
-        Dictionary<UrlTypes, String> urlTypesText = new Dictionary<UrlTypes, string>()
+        Dictionary<Enums, String> urlTypesText = new Dictionary<Enums, string>()
         {
-            { UrlTypes.YoutubeVideo, "video" },
-            { UrlTypes.YoutubePlaylist, "playlist" },
-            { UrlTypes.YoutubeChannel, "channel" },
-            { UrlTypes.Page, "page" }
+            { Enums.YoutubeVideo, "video" },
+            { Enums.YoutubePlaylist, "playlist" },
+            { Enums.YoutubeChannel, "channel" },
+            { Enums.Page, "page" }
         };
 
         public EasyInterfaceWindow()
@@ -47,13 +48,15 @@ namespace ytdldotnet
             InitializeComponent();
 
             // creates the URL textbox
-            urlBox = CustomControls.GetUrlTextbox();
+            urlBox = CustomControls.GetPathBox();
             urlBox.SetResourceReference(Control.BorderBrushProperty, "AccentColorBrush");
             TextBoxHelper.SetWatermark(urlBox, "enter a YouTube URL...");
             urlBox.TextChanged += UrlBox_TextChanged;
             Grid.SetColumn(urlBox, 0);
             Grid.SetRow(urlBox, 0);
             MainGrid.Children.Add(urlBox);
+
+            urlBox.Focus();
         }
         
         private void UrlBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -100,15 +103,15 @@ namespace ytdldotnet
             new Thread(() => FetchYtdlInfo(url, GetUrlType(url))).Start();
         }
 
-        private async void FetchYtdlInfo(string url, UrlTypes urlType)
+        private async void FetchYtdlInfo(string url, Enums urlType)
         {
             YtdlManager ytdlManager = new YtdlManager();
-            if (urlType == UrlTypes.YoutubeChannel || urlType == UrlTypes.YoutubePlaylist)
+            if (urlType == Enums.YoutubeChannel || urlType == Enums.YoutubePlaylist)
             {
                 PlaylistInfo playlistInfo = await ytdlManager.GetPlaylistNameAndLength(url, urlType);
                 this.Dispatcher.Invoke(() =>
                 {
-                    if(urlType == UrlTypes.YoutubeChannel)
+                    if (urlType == Enums.YoutubeChannel)
                     {
                         initialFetchInfoLabel.Content = "Channel: " + playlistInfo.Name + " | " + playlistInfo.NumberOfVideos + " videos";
                     }
@@ -117,36 +120,50 @@ namespace ytdldotnet
                         initialFetchInfoLabel.Content = "Playlist: " + playlistInfo.Name + " | " + playlistInfo.NumberOfVideos + " videos";
                     }
 
-                    Grid.SetRow(initialFetchProgressRing, 2);
+                    Grid.SetRow(initialFetchProgressRing, 4);
 
-                    
+                    //TO-DO: show save directory (or will it be in options?)
+                    //for testing: just a textbox
+                    localPathBox = CustomControls.GetPathBox();
+                    localPathBox.SetResourceReference(Control.BorderBrushProperty, "AccentColorBrush");
+                    TextBoxHelper.SetWatermark(localPathBox, "enter the save path...");
+                    //localPathBox.TextChanged += LocalPathBox_TextChanged; //
+                    Grid.SetColumn(localPathBox, 0);
+                    Grid.SetRow(localPathBox, 2);
+                    MainGrid.Children.Add(localPathBox);
+
+                    //TO-DO: show conversion options if available
+                    Grid conversionButtons = CustomControls.GetConversionButtons();
+                    Grid.SetColumn(conversionButtons, 0);
+                    Grid.SetRow(conversionButtons, 3);
+                    MainGrid.Children.Add(conversionButtons);
+
+                    //TO-DO: use info from playlist head
                 });
 
                 playlistInfo.Videos = await ytdlManager.GetPlaylistHead(url);
-
-                //TO-DO: use info from playlist head
             }
-            else if (urlType == UrlTypes.YoutubeVideo)
+            else if (urlType == Enums.YoutubeVideo)
             {
                 //TO-DO
             }
         }
 
-        private UrlTypes GetUrlType(string url)
+        private Enums GetUrlType(string url)
         {
             if (url.Contains("channel/") || url.Contains("user/"))
             {
-                return UrlTypes.YoutubeChannel;
+                return Enums.YoutubeChannel;
             }
             else if (url.Contains("list="))
             {
-                return UrlTypes.YoutubePlaylist;
+                return Enums.YoutubePlaylist;
             }
             else if (url.Contains("v=") || url.Contains("youtu.be"))
             {
-                return UrlTypes.YoutubeVideo;
+                return Enums.YoutubeVideo;
             }
-            return UrlTypes.Page;
+            return Enums.Page;
         }
 
         // handles (or at least should do so) animations when controls are changed
