@@ -51,7 +51,7 @@ namespace ytdldotnet.Util
         {
             List<RadioButton> buttons = new List<RadioButton>();
 
-            foreach(TargetFormats format in Enum.GetValues(typeof(TargetFormats)))
+            foreach(ConversionFormats format in Enum.GetValues(typeof(ConversionFormats)))
             {
                 RadioButton btn = new RadioButton()
                 {
@@ -61,8 +61,8 @@ namespace ytdldotnet.Util
                     IsChecked = false
                 };
 
-                Grid.SetColumn(btn, Array.IndexOf(Enum.GetValues(typeof(TargetFormats)), format) % 3);
-                Grid.SetRow(btn, (int) Math.Floor((double)(Array.IndexOf(Enum.GetValues(typeof(TargetFormats)), format)/3)));
+                Grid.SetColumn(btn, Array.IndexOf(Enum.GetValues(typeof(ConversionFormats)), format) % 3);
+                Grid.SetRow(btn, (int) Math.Floor((double)(Array.IndexOf(Enum.GetValues(typeof(ConversionFormats)), format)/3)));
 
                 buttons.Add(btn);
             }

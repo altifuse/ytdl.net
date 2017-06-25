@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ytdldotnet.Util
 {
-    enum Enums
+    public enum UrlTypes
     {
         YoutubeVideo,
         YoutubePlaylist,
@@ -14,7 +14,7 @@ namespace ytdldotnet.Util
         Page
     }
 
-    enum TargetFormats
+    public enum ConversionFormats
     {
         DDL,
         MP3,
@@ -22,5 +22,33 @@ namespace ytdldotnet.Util
         AVI,
         MP4,
         WMV
+    }
+
+    public static class EnumTexts
+    {
+        public static string UrlTypesText(UrlTypes urlType)
+        {
+            switch(urlType)
+            {
+                case UrlTypes.YoutubeVideo: return "video";
+                case UrlTypes.YoutubePlaylist: return "playlist";
+                case UrlTypes.YoutubeChannel: return "channel";
+            }
+            return "page";
+        }
+
+        public static string ConversionParameters(ConversionFormats conversionFormat)
+        {
+            switch(conversionFormat)
+            {
+                case ConversionFormats.DDL: return "";
+                case ConversionFormats.MP3: return "--extract-audio --audio-format mp3 --audio-quality 0";
+                case ConversionFormats.OGG: return "--extract-audio --audio-format vorbis --audio-quality 0";
+                case ConversionFormats.AVI: return ""; // TO-DO
+                case ConversionFormats.MP4: return ""; // TO-DO
+                case ConversionFormats.WMV: return ""; // TO-DO
+            }
+            return "";
+        }
     }
 }

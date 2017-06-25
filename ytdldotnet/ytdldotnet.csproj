@@ -70,6 +70,10 @@
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="userControls\VideoListItem.xaml.cs">
+      <DependentUpon>VideoListItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="util\BooleanToConversionFormatConverter.cs" />
     <Compile Include="util\CustomControls.cs" />
     <Compile Include="util\Enums.cs" />
     <Page Include="EasyInterfacePage.xaml">
@@ -89,6 +93,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="themes\YouTubeRed.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="userControls\VideoListItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

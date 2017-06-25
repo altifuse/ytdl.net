@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ytdldotnet"
       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+      xmlns:util="clr-namespace:ytdldotnet.util"
       mc:Ignorable="d" 
       d:DesignHeight="256" d:DesignWidth="256"
       Height="Auto" Width="Auto"
@@ -15,12 +16,17 @@
             <RowDefinition Height="Auto"/> <!-- status text -->
             <RowDefinition Height="Auto"/> <!-- conversion formats -->
             <RowDefinition Height="Auto"/> <!-- local path box -->
-            <RowDefinition Height="Auto"/> <!-- preview for playlists -->
+            <RowDefinition Height="Auto"/> <!-- convert button -->
             <RowDefinition Height="Auto"/> <!-- progress ring -->
         </Grid.RowDefinitions>
-        <TextBox x:Name="urlBox" Style="{StaticResource ResourceKey=EasyTextBox}"
-                 Text="{Binding Path=Url}" Controls:TextBoxHelper.Watermark="Enter a YouTube URL here" Grid.Column="0" Grid.Row="0"/>
-        <Label x:Name="StatusLabel" Content="{Binding Path=StatusText}" Grid.Column="0" Grid.Row="1" Visibility="{Binding Path=IsStatusTextVisible, Converter={StaticResource BoolToVis}}"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/> <!-- controls -->
+            <ColumnDefinition Width="Auto"/> <!-- playlist preview -->
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="UrlBox" Style="{StaticResource ResourceKey=EasyTextBox}" TextChanged="UrlBox_TextChanged"
+                 Text="{Binding Path=Url, UpdateSourceTrigger=PropertyChanged}" Controls:TextBoxHelper.Watermark="Enter a YouTube URL here" Grid.Column="0" Grid.Row="0"/>
+        <Label x:Name="StatusLabel" Content="{Binding Path=StatusText}" Grid.Column="0" Grid.Row="1" Visibility="{Binding Path=IsStatusTextVisible, Converter={StaticResource BoolToVis}}"
+               HorizontalAlignment="Center"/>
         <Grid Grid.Column="0" Grid.Row="2" Visibility="{Binding Path=IsConversionFormatVisible, Converter={StaticResource BoolToVis}}" IsEnabled="{Binding Path=CanConvert}" Margin="0,0,0,8">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -31,14 +37,29 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <RadioButton x:Name="DDLformat" Style="{StaticResource ResourceKey=ConversionFormat}" HorizontalAlignment="Right" Content="Original" Grid.Column="0" Grid.Row="0"/>
-            <RadioButton x:Name="MP3format" Style="{StaticResource ResourceKey=ConversionFormat}" Content="MP3" Grid.Column="1" Grid.Row="0"/>
-            <RadioButton x:Name="OGGformat" Style="{StaticResource ResourceKey=ConversionFormat}" HorizontalAlignment="Left" Content="OGG" Grid.Column="2" Grid.Row="0"/>
-            <RadioButton x:Name="AVIformat" Style="{StaticResource ResourceKey=ConversionFormat}" HorizontalAlignment="Right" Content="AVI" Grid.Column="0" Grid.Row="1"/>
-            <RadioButton x:Name="MP4format" Style="{StaticResource ResourceKey=ConversionFormat}" Content="MP4" Grid.Column="1" Grid.Row="1"/>
-            <RadioButton x:Name="WMVformat" Style="{StaticResource ResourceKey=ConversionFormat}" HorizontalAlignment="Left" Content="WMV" Grid.Column="2" Grid.Row="1"/>
+            <Grid.Resources>
+                <util:BooleanToConversionFormatConverter x:Key="BooleanToConversionFormatConverter"/>
+            </Grid.Resources>
+            <RadioButton x:Name="DDLformat" IsChecked="{Binding Path=ConversionOption, Converter={StaticResource BooleanToConversionFormatConverter}, ConverterParameter=DDL}"
+                         Style="{StaticResource ResourceKey=ConversionFormat}" Content="Original" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right"/>
+            <RadioButton x:Name="MP3format" IsChecked="{Binding Path=ConversionOption, Converter={StaticResource BooleanToConversionFormatConverter}, ConverterParameter=MP3}"
+                         Style="{StaticResource ResourceKey=ConversionFormat}" Content="MP3" Grid.Column="1" Grid.Row="0"/>
+            <RadioButton x:Name="OGGformat" IsChecked="{Binding Path=ConversionOption, Converter={StaticResource BooleanToConversionFormatConverter}, ConverterParameter=OGG}"
+                         Style="{StaticResource ResourceKey=ConversionFormat}" Content="OGG" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left"/>
+            <RadioButton x:Name="AVIformat" IsChecked="{Binding Path=ConversionOption, Converter={StaticResource BooleanToConversionFormatConverter}, ConverterParameter=AVI}"
+                         Style="{StaticResource ResourceKey=ConversionFormat}" Content="AVI" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right"/>
+            <RadioButton x:Name="MP4format" IsChecked="{Binding Path=ConversionOption, Converter={StaticResource BooleanToConversionFormatConverter}, ConverterParameter=MP4}"
+                         Style="{StaticResource ResourceKey=ConversionFormat}" Content="MP4" Grid.Column="1" Grid.Row="1"/>
+            <RadioButton x:Name="WMVformat" IsChecked="{Binding Path=ConversionOption, Converter={StaticResource BooleanToConversionFormatConverter}, ConverterParameter=WMV}"
+                         Style="{StaticResource ResourceKey=ConversionFormat}" Content="WMV" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left"/>
         </Grid>
-        <TextBox x:Name="localPathBox" Style="{StaticResource ResourceKey=EasyTextBox}" Visibility="{Binding Path=IsLocalPathBoxVisible, Converter={StaticResource BoolToVis}}"
+        <TextBox x:Name="LocalPathBox" Style="{StaticResource ResourceKey=EasyTextBox}" Visibility="{Binding Path=IsLocalPathBoxVisible, Converter={StaticResource BoolToVis}}"
                  Text="{Binding Path=LocalPath}" Controls:TextBoxHelper.Watermark="Enter your local path" Grid.Column="0" Grid.Row="3"/>
+        <Button x:Name="DownloadButton" Visibility="{Binding Path=IsDownloadButtonVisible, Converter={StaticResource BoolToVis}}"
+                Content="Download!" Grid.Column="0" Grid.Row="4" Width="240" Height="32" Margin="8" FontSize="12" Click="DownloadButton_Click"/>
+        <Controls:ProgressRing x:Name="LeftProgressRing" Width="64" Height="64" Margin="16" Grid.Column="0" Grid.Row="5"
+                               Visibility="{Binding Path=IsLeftProgressRingVisible, Converter={StaticResource BoolToVis}}"/>
+        <Controls:ProgressRing x:Name="RightProgressRing" Width="64" Height="64" Margin="16" Grid.Column="1" Grid.RowSpan="100"
+                               Visibility="{Binding Path=IsRightProgressRingVisible, Converter={StaticResource BoolToVis}}"/>
     </Grid>
 </Page>
