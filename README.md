@@ -3,4 +3,4 @@ A smart interface for youtube-dl. Features an easy-to-use, automated workflow, a
 
 # Development
 
-I am currently working on the 'main-dev' branch and intend to merge it into the master when the Easy Interface is fully functional. Next milestones, not necessarily in order: options dialog, Advanced Interface, compatibility check with other websites.
+I am currently working on the 'main-dev-remake' branch and intend to merge it into the master when the Easy Interface is fully functional. Next milestones, not necessarily in order: options dialog, Advanced Interface, compatibility check with other websites.
